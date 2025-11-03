@@ -1,0 +1,56 @@
+# ----------------------------
+# Elixir / Phoenix
+# ----------------------------
+/_build/
+cover/
+deps/
+doc/
+tmp/
+*.ez
+erl_crash.dump
+*.beam
+*.tar
+
+# Ignore .fetch files (used by Mix for dependency fetching)
+.fetch
+
+# Ignore generated assets (Phoenix digest, esbuild, Tailwind)
+priv/static/assets/
+priv/static/cache_manifest.json
+
+# ----------------------------
+# Node / Frontend
+# ----------------------------
+assets/node_modules/
+npm-debug.log
+yarn-debug.log
+yarn-error.log
+
+# ----------------------------
+# Environment & credentials
+# ----------------------------
+.env
+.env.*
+/config/dev.exs
+/config/prod.secret.exs
+
+# ----------------------------
+# OS-specific junk
+# ----------------------------
+.DS_Store
+Thumbs.db
+
+# ----------------------------
+# IDE / Editor files
+# ----------------------------
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ----------------------------
+# Mix build artifacts
+# ----------------------------
+.eunit/
+_rebar3/
+.hex/
