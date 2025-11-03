@@ -10,32 +10,27 @@ defmodule EamsWeb.Router do
     plug :put_secure_browser_headers
   end
 
+  # New pipeline that adds app layout
+  pipeline :app_layout do
+    plug :put_layout, html: {EamsWeb.Layouts, :app}
+  end
+
   pipeline :api do
     plug :accepts, ["json"]
   end
 
   scope "/", EamsWeb do
-    pipe_through :browser
+    pipe_through [:browser, :app_layout]  # Add app_layout pipeline
 
     get "/", PageController, :home
   end
 
-  # Other scopes may use custom stacks.
-  # scope "/api", EamsWeb do
-  #   pipe_through :api
-  # end
-
-  # Enable LiveDashboard and Swoosh mailbox preview in development
+  # Development routes without app layout
   if Application.compile_env(:eams, :dev_routes) do
-    # If you want to use the LiveDashboard in production, you should put
-    # it behind authentication and allow only admins to access it.
-    # If your application does not have an admins-only section yet,
-    # you can use Plug.BasicAuth to set up some basic authentication
-    # as long as you are also using SSL (which you should anyway).
     import Phoenix.LiveDashboard.Router
 
     scope "/dev" do
-      pipe_through :browser
+      pipe_through :browser  # Only browser pipeline, no app layout
 
       live_dashboard "/dashboard", metrics: EamsWeb.Telemetry
       forward "/mailbox", Plug.Swoosh.MailboxPreview
