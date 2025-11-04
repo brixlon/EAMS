@@ -14,16 +14,12 @@ defmodule EamsWeb.Router do
     plug :put_layout, html: {EamsWeb.Layouts, :app}
   end
 
-  # Public routes (no authentication required) - no app layout
-  live_session :public,
-    layout: {EamsWeb.Layouts, :root} do
+  # Public routes (no authentication required)
+  scope "/", EamsWeb do
+    pipe_through :browser
 
-    scope "/", EamsWeb do
-      pipe_through :browser
-
-      live "/login", LoginLive, :index
-      live "/forgot-password", ForgotPasswordLive, :index
-    end
+    live "/login", LoginLive, :index
+    live "/forgot-password", ForgotPasswordLive, :index
   end
 
   # Protected routes (authentication required)
