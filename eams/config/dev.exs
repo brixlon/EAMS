@@ -3,7 +3,7 @@ import Config
 # Configure your database
 config :eams, Eams.Repo,
   username: "postgres",
-  password: "postgres",
+  password: "developer",
   hostname: "localhost",
   database: "eams_dev",
   stacktrace: true,

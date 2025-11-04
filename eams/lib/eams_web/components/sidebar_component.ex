@@ -11,14 +11,15 @@ defmodule EamsWeb.SidebarComponent do
     ~H"""
     <aside
       id="sidebar"
-      class="flex flex-col bg-indigo-600 text-white h-screen transition-all duration-300 overflow-hidden"
-      style="width: 16rem"
-      phx-hook="SidebarToggle"
+      class={[
+        "flex flex-col bg-indigo-600 text-white h-screen transition-all duration-300 overflow-hidden",
+        if(@sidebar_open, do: "w-64", else: "w-16")
+      ]}
     >
       <!-- Toggle Button -->
       <button
-        phx-click={toggle_sidebar()}
-        class="absolute -right-3 top-6 bg-indigo-500 hover:bg-indigo-400 text-white w-6 h-6 flex items-center justify-center rounded-full shadow"
+        phx-click="toggle_sidebar"
+        class="absolute -right-3 top-6 bg-indigo-500 hover:bg-indigo-400 text-white w-6 h-6 flex items-center justify-center rounded-full shadow z-10"
         title="Toggle sidebar"
       >
         ⇔
@@ -26,25 +27,34 @@ defmodule EamsWeb.SidebarComponent do
 
       <!-- Logo -->
       <div class="p-6 flex items-center gap-2 border-b border-indigo-500">
-        <img src={~p"/images/logo.svg"} width="36" alt="EAMS Logo" class="brightness-0 invert" />
-        <span class="font-bold text-xl tracking-wide sidebar-text">EAMS</span>
+        <div class="w-9 h-9 bg-white rounded-lg flex items-center justify-center text-indigo-600 font-bold text-xl">
+          E
+        </div>
+        <%= if @sidebar_open do %>
+          <span class="font-bold text-xl tracking-wide">EAMS</span>
+        <% end %>
       </div>
 
       <!-- Navigation -->
       <nav class="flex-1 px-3 py-6 space-y-1 overflow-y-auto">
         <%= for item <- nav_links(@current_user) do %>
-          <a
-            href={item.path}
+          <.link
+            navigate={item.path}
             class="flex items-center gap-3 py-2 px-3 rounded-md hover:bg-indigo-500 transition-colors group"
           >
-            <span><%= item.icon %></span>
-            <span class="sidebar-text"><%= item.label %></span>
-          </a>
+            <span class="text-xl"><%= item.icon %></span>
+            <%= if @sidebar_open do %>
+              <span><%= item.label %></span>
+            <% end %>
+          </.link>
         <% end %>
       </nav>
 
       <!-- User Info & Logout -->
-      <div class="p-4 border-t border-indigo-500 sidebar-text">
+      <div class={[
+        "p-4 border-t border-indigo-500",
+        unless(@sidebar_open, do: "hidden")
+      ]}>
         <%= if @current_user do %>
           <div class="flex items-center gap-3 mb-3">
             <div class="w-10 h-10 rounded-full bg-indigo-800 flex items-center justify-center text-white font-semibold">
@@ -55,36 +65,30 @@ defmodule EamsWeb.SidebarComponent do
               <p class="text-xs text-indigo-200 capitalize"><%= @current_user.role %></p>
             </div>
           </div>
-          <a
-            href={~p"/users/settings"}
+          <.link
+            navigate={~p"/users/settings"}
             class="block w-full py-2 px-3 text-sm rounded hover:bg-indigo-500 text-center mb-2 transition"
           >
             ⚙️ Settings
-          </a>
-          <a
+          </.link>
+          <.link
             href={~p"/users/log_out"}
-            data-method="delete"
+            method="delete"
             class="block w-full py-2 px-3 text-sm rounded hover:bg-indigo-500 text-center transition"
           >
             🚪 Log out
-          </a>
+          </.link>
         <% else %>
-          <a
-            href={~p"/users/log_in"}
+          <.link
+            navigate={~p"/login"}
             class="block w-full py-2 px-3 text-sm rounded hover:bg-indigo-500 text-center transition"
           >
             🔐 Log in
-          </a>
+          </.link>
         <% end %>
       </div>
     </aside>
     """
-  end
-
-  # JS command: toggles sidebar width and text visibility
-  defp toggle_sidebar do
-    JS.toggle_class("w-16", to: "#sidebar")
-    |> JS.toggle_class("hidden", to: "#sidebar .sidebar-text")
   end
 
   # Menu items per role
